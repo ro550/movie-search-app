@@ -4,44 +4,21 @@ import { useParams, Link } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
 import { isFavorite, saveFavorite, removeFavorite } from '../utils/favorites';
+import useFetch from "../hooks/useFetch";
 
 const API_KEY = import.meta.env.VITE_OMDB_API_KEY;
 
 function MovieDetailsPage () {
     const {id} = useParams();
-    const [movie, setMovie] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const url = `https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`;
+    const {data: movie, loading, error} = useFetch(url);
     const [favorited, setFavorited] = useState(false);
 
     useEffect (() => {
-        async function fetchMovie() {
-            setLoading(true);
-            setError(null);
-            setMovie(null);
-
-            try {
-                const response = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`);
-                const data = await response.json();
-
-                if (data.Response === "True") {
-                    setMovie(data);
-                    setFavorited(isFavorite(data.imdbID));
-                } else {
-                    setError(data.Error);
-                }
-            } catch (err) {
-                setError("Something went wrong. Please check your internet connection and try again.");
-            } finally {
-                setLoading(false);
-            }
+        if (movie) {
+            setFavorited(isFavorite(movie.imdbID));
         }
-        fetchMovie();
-    }, [id]);
-
-    if (loading) return <LoadingSpinner />;
-    if (error) return <ErrorMessage message={error} />;
-    if (!movie) return null;
+    }, [movie]);
 
     function handleFavoriteClick () {
         if (favorited) {
@@ -51,6 +28,10 @@ function MovieDetailsPage () {
         }
      setFavorited(!favorited);   
     }
+
+    if (loading) return <LoadingSpinner />;
+    if (error) return <ErrorMessage message={error} />;
+    if (!movie) return null;    
 
     return (
         <div>
