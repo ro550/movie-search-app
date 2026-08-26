@@ -20,8 +20,8 @@ function HomePage() {
   }
 
   return (
-    <div>
-      <h1>Home Page</h1>
+    <div className="min-h-screen bg-slate-50">
+      <h1 className="text-2xl font-bold px-4 max-w-6xl mx-auto mb-4 sm:text-3xl">Home Page</h1>
       <SearchBar onSearch={handleSearch} />
       
       {/*Show the loading spinner, error message or movie grid based on the current state*/}
