@@ -13,9 +13,12 @@ function HomePage() {
   const {data, loading, error, refetch} = useFetch(url, true);
   const movies = data?.Search || [];
 
-  async function handleSearch (term) {
-    setSearchTerm(term);
-    const searchUrl = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${encodeURIComponent(term)}`
+  function handleSearch (term) {
+    const trimmedTerm = term.trim();
+    if (!trimmedTerm) return; // Do not perform search if the term is empty
+    
+    setSearchTerm(trimmedTerm);
+    const searchUrl = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${encodeURIComponent(trimmedTerm)}`
     refetch(searchUrl);
   }
 
