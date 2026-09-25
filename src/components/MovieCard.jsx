@@ -1,7 +1,6 @@
-
 import { Link } from "react-router-dom";
 import { isFavorite, saveFavorite, removeFavorite } from "../utils/favorites";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Displays a movie's poster, title, year and type
 // Shows "No Poster Available" when the movie does not have a poster
@@ -9,7 +8,16 @@ function MovieCard({ movie }) {
   const [favorited, setFavorited] = useState(isFavorite(movie.imdbID));
   const posterUrl = movie.Poster !== 'N/A' ? movie.Poster : null;
 
-  function handleFavoriteClick (e) {
+  useEffect(() => {
+    function syncFavorite() {
+      setFavorited(isFavorite(movie.imdbID));
+    }
+
+    window.addEventListener('favoritesChanged', syncFavorite);
+    return () => window.removeEventListener('favoritesChanged', syncFavorite);
+  }, [movie.imdbID]);
+
+  function handleFavoriteClick(e) {
     e.preventDefault();
     e.stopPropagation(); // Prevents the click from reaching the parent Link
 
@@ -35,7 +43,12 @@ function MovieCard({ movie }) {
             <span>{movie.Year}</span>
             <span className="capitalize bg-slate-100 rounded px-2 py-0.5">{movie.Type}</span>
           </div>
-          <button onClick={handleFavoriteClick}> {favorited ? '♥' : '♡'} </button>  {/*button that adds or removes the movie from favorites*/}
+          <button
+            onClick={handleFavoriteClick}
+            aria-label={favorited ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            {favorited ? '♥' : '♡'}
+          </button>
         </div>
       </div>
     </Link>

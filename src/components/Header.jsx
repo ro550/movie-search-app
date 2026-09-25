@@ -7,8 +7,15 @@ function Header() {
   const [favoritesCount, setFavoritesCount] = useState(0);
 
   useEffect(() => {
-    setFavoritesCount(getFavorites().length);
-  });
+    function updateCount() {
+      setFavoritesCount(getFavorites().length);
+    }
+
+    updateCount();
+    window.addEventListener('favoritesChanged', updateCount);
+    return () => window.removeEventListener('favoritesChanged', updateCount);
+  }, []);
+
   return (
     <header className="bg-slate-900 text-white px-4 py-3 sm:px-6">
       <nav className="flex items-center justify-between max-w-6xl mx-auto">
