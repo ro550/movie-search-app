@@ -1,5 +1,6 @@
 
 import MovieCard from './MovieCard';
+import PropTypes from 'prop-types';
 
 function MovieGrid({ movies }) {
   return (
@@ -11,5 +12,12 @@ function MovieGrid({ movies }) {
   );
 }
 
-export default MovieGrid;
+MovieGrid.propTypes = {
+  movies: PropTypes.arrayOf(
+    PropTypes.shape({
+      imdbID: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
 
+export default MovieGrid;

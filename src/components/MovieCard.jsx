@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { isFavorite, saveFavorite, removeFavorite } from "../utils/favorites";
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
 // Displays a movie's poster, title, year and type
 // Shows "No Poster Available" when the movie does not have a poster
@@ -54,5 +55,15 @@ function MovieCard({ movie }) {
     </Link>
   );
 }
+
+MovieCard.propTypes = {
+  movie: PropTypes.shape({
+    imdbID: PropTypes.string.isRequired,
+    Title: PropTypes.string.isRequired,
+    Year: PropTypes.string,
+    Type: PropTypes.string,
+    Poster: PropTypes.string,
+  }).isRequired,
+};
 
 export default MovieCard;
